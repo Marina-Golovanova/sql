@@ -8,14 +8,19 @@ USE vk;
  */
 
 SELECT from_user_id FROM messages m 
-WHERE to_user_id = 1 GROUP BY from_user_id ORDER BY count(*) DESC LIMIT 1;
+WHERE to_user_id = 1 AND (from_user_id 
+IN (SELECT initiator_user_id FROM friend_requests WHERE target_user_id = 1 AND status = 'approved')
+OR from_user_id in (SELECT target_user_id FROM friend_requests WHERE initiator_user_id = 1 AND status = 'approved'))
+GROUP BY from_user_id 
+ORDER BY count(*) 
+DESC LIMIT 1;
 
 /*
  * Задача 2
  * Подсчитать общее количество лайков, которые получили пользователи младше 11 лет.
  */
 
-SELECT count(*) FROM likes WHERE user_id IN (SELECT user_id FROM profiles WHERE (TO_DAYS(NOW()) - TO_DAYS(birthday)) / 365.25 < 11);
+SELECT count(*) FROM profiles WHERE (TO_DAYS(NOW()) - TO_DAYS(birthday)) / 365.25 < 11 AND photo_id IN (SELECT media_id FROM likes);
 
 /*
  * Задача 3
