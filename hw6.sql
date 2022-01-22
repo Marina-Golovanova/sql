@@ -20,7 +20,10 @@ DESC LIMIT 1;
  * Подсчитать общее количество лайков, которые получили пользователи младше 11 лет.
  */
 
-SELECT count(*) FROM profiles WHERE (TO_DAYS(NOW()) - TO_DAYS(birthday)) / 365.25 < 11 AND photo_id IN (SELECT media_id FROM likes);
+
+SELECT COUNT(*) FROM likes 
+WHERE media_id 
+IN (SELECT photo_id FROM profiles WHERE (TO_DAYS(NOW()) - TO_DAYS(birthday)) / 365.25 < 11);
 
 /*
  * Задача 3
